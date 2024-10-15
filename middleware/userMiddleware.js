@@ -1,25 +1,26 @@
-const User = require('../models/User'); //Asegurate de que la capitalizacion es correcta
+const User = require('../models/User');
 
+// Middleware to get a user by ID
 async function getUser(req, res, next) {
   try {
     const user = await User.findById(req.params.id).populate('wallet');
-    if (user == null) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+    if (!user) {
+      return next({ status: 404, message: 'User not found' });
     }
     res.user = user;
     next();
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    next({ status: 500, message: err.message });
   }
 }
 
 async function findPosition(sponsorId) {
-  let position = { front: 0, level: 1, position: 0 }; 
+  let position = { front: 0, level: 1, position: 0 };
 
   if (sponsorId) {
     const sponsor = await User.findById(sponsorId);
     if (!sponsor) {
-      return res.status(404).json({ message: 'Patrocinador no encontrado' }); 
+      throw new Error('Sponsor not found');
     }
 
     if (sponsor.level === 10) {
@@ -49,4 +50,3 @@ async function findPosition(sponsorId) {
 }
 
 module.exports = { getUser, findPosition };
- 

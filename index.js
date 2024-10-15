@@ -6,17 +6,38 @@ const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
-const authMiddleware = require('./middleware/authMiddleware');
-const adminMiddleware = require('./middleware/adminMiddleware'); // Asegúrate de crear este archivo
+const { authMiddleware, adminMiddleware } = require('./middleware/authMiddleware');
+const errorHandler = require('./middleware/errorHandler'); // Correct import
 
+const app = express();
+app.use(express.json());
+app.use(helmet());
+app.use(express.static(path.join(__dirname, 'public')));
+const PORT = process.env.PORT || 4000;
 
-console.log('Intentando cargar el modelo User');
+// Configuración de CORS (ya está bien)
+app.use(cors({
+    origin: [
+        'https://coinsumo.co',
+        'http://localhost:4000',
+        'https://www.coinsumo.co'
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+}));
 
-const User = require('./models/User'); 
+// Limitar las solicitudes (rate limiting) (ya está bien)
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
+});
 
-// Rutas de la API
+app.use('/api', apiLimiter);
+
+// Rutas de la API (corregido)
 const userRouter = require('./models/routes/users');
-const afiliadosRouter = require('./models/routes/afiliados'); 
+const afiliadosRouter = require('./models/routes/afiliados');
 const thirdPartyRouter = require('./models/routes/thirdParties');
 const walletRouter = require('./models/routes/wallet');
 const transactionRouter = require('./models/routes/transactions');
@@ -29,62 +50,39 @@ const entrepreneurRouter = require('./models/routes/entrepreneurs');
 const collaboratorRouter = require('./models/routes/collaborators');
 const crmRouter = require('./models/routes/crm');
 
-const app = express(); 
-// Usa la carpeta public para archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
-const PORT = process.env.PORT || 4000; // cambio a otro puerto temporalmente
-
-// Configuración de CORS
-app.use(cors({
-    origin: [
-                'https://coinsumo.co', 
-                'http://localhost:4000', // Agrega localhost para desarrollo
-                'https://www.coinsumo.co'
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-}));
-
-app.use(express.json());
-app.use(helmet());
-
-
-// Rutas de la API
-app.use('/api/users', authMiddleware, userRouter);
-app.use('/api/afiliados', authMiddleware, afiliadosRouter); 
-app.use('/api/thirdParties', authMiddleware, thirdPartyRouter);
+app.use('/api/users', userRouter); // Quitar authMiddleware de algunas rutas
+app.use('/api/afiliados', afiliadosRouter);
+app.use('/api/thirdParties', thirdPartyRouter);
 app.use('/api/wallet', authMiddleware, walletRouter);
-app.use('/api/transactions', authMiddleware, transactionRouter);
-app.use('/api/points', authMiddleware, pointsRouter);
-app.use('/api/purchases', authMiddleware, purchasesRouter);
-app.use('/api/users/backoffice', authMiddleware, userBackOfficeRouter);
-app.use('/api/domiciliarios', authMiddleware, domiciliariosRouter);
-app.use('/api/wholesalers', wholesalerRouter); 
-app.use('/api/entrepreneurs', entrepreneurRouter); 
-app.use('/api/collaborators', authMiddleware, collaboratorRouter);
-app.use('/api/crm', authMiddleware, crmRouter);
+app.use('/api/transactions', transactionRouter);
+app.use('/api/points', pointsRouter);
+app.use('/api/purchases', purchasesRouter);
+app.use('/api/users/backoffice', userBackOfficeRouter);
+app.use('/api/domiciliarios', domiciliariosRouter);
+app.use('/api/wholesalers', wholesalerRouter);
+app.use('/api/entrepreneurs', entrepreneurRouter);
+app.use('/api/collaborators', collaboratorRouter);
+app.use('/api/crm', crmRouter);
 
-//Conexión a la base de datos MongoDB
-mongoose.connect(process.env.MONGO_URI, {})
-    .then(() => console.log('Conectado a la base de datos'))
-    .catch(err => console.error('Error al conectar a la base de datos:', err));
-
-// Limitar las solicitudes (rate limiting)
-const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 100, // Limitar a 1000 solicitudes
-    message: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
-});
-
-app.use('/api', apiLimiter); 
-
-//Ruta para admin
+// Ruta para admin (ya está bien)
 app.get('/api/admin/users', authMiddleware, adminMiddleware, async (req, res) => {
-    // Lógica para listar usuarios
     res.send('Usuarios');
 });
 
+// Conexión a la base de datos MongoDB (corregido)
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('Conectado a la base de datos'))
+    .catch(err => {
+        console.error('Error al conectar a la base de datos:', err);
+        process.exit(1); // Detener la ejecución si hay un error de conexión
+    });
 
-app.listen(4000, () => {
-    console.log('Servidor corriendo en http://localhost:4000');
+// Use the error-handling middleware
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

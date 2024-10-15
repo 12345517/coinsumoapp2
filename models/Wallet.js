@@ -1,22 +1,22 @@
-const express = require('express');
-const router = express.Router();
-const Wallet = require('./Wallet');
-const User = require('./User');
-const Transaction = require('./Transaction');
-const authMiddleware = require('../middleware/authMiddleware');
+const mongoose = require('mongoose');
 
-// Obtener el saldo de la billetera de un usuario
-router.get('/:userId', authMiddleware, async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const wallet = await Wallet.findOne({ userId });
-    if (!wallet) {
-      return res.status(404).json({ message: 'Billetera no encontrada' });
-    }
-    res.json({ balance: wallet.balance });
-  } catch (error) {
-    console.error('Error al obtener el saldo de la billetera:', error);
-    res.status(500).json({ message: 'Error al obtener el saldo de la billetera' });
-  }
+const walletSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    balance: { type: Number, default: 0 },
+    transactions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Transaction'
+    }],
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
- 
+
+// Middleware para actualizar la fecha de actualización
+walletSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
+});
+
+const Wallet = mongoose.model('Wallet', walletSchema);
+
+module.exports = Wallet;
