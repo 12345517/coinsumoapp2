@@ -1,3 +1,4 @@
+// C:\Users\USUARIO\coinsumo\middleware\validateAmount.js
 module.exports = function validateAmount(req, res, next) {
     const { amount } = req.body;
     if (typeof amount !== 'number' || amount <= 0) {

@@ -1,10 +1,11 @@
-function errorHandler(err, req, res, next) {
-  console.error(err.stack); // Log the error stack trace for debugging
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User'); // Asegúrate de que la ruta sea correcta
+const Collaborator = require('../models/Collaborator'); // Asegúrate de que la ruta sea correcta
 
-  const status = err.status || 500; // Default to 500 if no status is provided
-  const message = err.message || 'Internal Server Error'; // Default message
+// Rutas y lógica para colaboradores
 
-  res.status(status).json({ error: message });
-}
-
-module.exports = errorHandler;
+module.exports = (err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+};
