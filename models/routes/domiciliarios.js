@@ -5,7 +5,7 @@ const Transaction = require('../Transaction');
 const Wallet = require('../Wallet'); // Asegúrate de que Wallet esté importado correctamente
 const authMiddleware = require('../../middleware/authMiddleware');
 // Ruta para obtener la información de un domiciliario
-router.get('/:domiciliarioId', authMiddleware, async (req, res) => {
+router.get('/:domiciliarioId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);
@@ -40,7 +40,7 @@ router.get('/:domiciliarioId', authMiddleware, async (req, res) => {
 });
 
 // Ruta para registrar una compra realizada por un domiciliario
-router.post('/:domiciliarioId/compras', authMiddleware, async (req, res) => {
+router.post('/:domiciliarioId/compras', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);

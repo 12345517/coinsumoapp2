@@ -4,7 +4,7 @@ const Transaction = require('../../models/Transaction');
 const authMiddleware = require('../../middleware/authMiddleware');
 
 //Obtener todas las transacciones
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware.authMiddleware, async (req, res) => {
     try {
         const transactions = await Transaction.find().populate('userId').populate('walletId');
         res.json(transactions);
@@ -15,7 +15,7 @@ router.get('/', authMiddleware, async (req, res) => {
 });
 
 // Crear una nueva transacción
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware.authMiddleware, async (req, res) => {
     const { amount, type, walletId, userId } = req.body;
     const newTransaction = new Transaction({ amount, type, walletId, userId });
 
@@ -38,7 +38,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
 
 //Obtener transacción por ID
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', authMiddleware.authMiddleware, async (req, res) => {
     try {
         const transaction = await Transaction.findById(req.params.id).populate('userId').populate('walletId');
         if (!transaction) {
@@ -52,7 +52,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 });
 
 //Actualizar transacción por ID
-router.patch('/:id', authMiddleware, async (req, res) => {
+router.patch('/:id', authMiddleware.authMiddleware, async (req, res) => {
     try {
         const updatedTransaction = await Transaction.findByIdAndUpdate(req.params.id, req.body, {new: true});
         if (!updatedTransaction) {
@@ -66,7 +66,7 @@ router.patch('/:id', authMiddleware, async (req, res) => {
 });
 
 //Eliminar transacción por ID
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', authMiddleware.authMiddleware, async (req, res) => {
     try {
         const result = await Transaction.findByIdAndDelete(req.params.id);
         if (!result) {

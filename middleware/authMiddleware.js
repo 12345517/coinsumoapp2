@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 // Middleware para autenticar usuarios
-const authMiddleware = (req, res, next) => {
+function authMiddleware(req, res, next)  {
   const token = req.header('Authorization');
   if (!token) {
     return res.status(401).json({ message: 'Acceso denegado. No se proporcionó un token.' });
@@ -10,9 +10,10 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    next();
+    console.log('AUtenticacion')
+    return next();
   } catch (error) {
-    res.status(400).json({ message: 'Token no válido.' });
+    return res.status(400).json({ message: 'Token no válido.' });
   }
 };
 

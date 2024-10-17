@@ -6,9 +6,14 @@ const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
-const authMiddleware = require('./middleware/authMiddleware');
-const adminMiddleware = require('./middleware/adminMiddleware');
-const errorHandler = require('./middleware/errorHandler');
+const authMiddleware = require('../middleware/authMiddleware');
+const adminMiddleware = require('../middleware/adminMiddleware');
+const errorHandler = require('../middleware/errorHandler');
+//import React from 'react';
+//import ReactDOM from 'react-dom';
+//import App from './App';
+//import '../public/styles.css'; // Importa el archivo de estilos desde el directorio public
+
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -17,6 +22,8 @@ app.use(express.json());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 // Configuración de CORS
 app.use(cors({
     origin: [
@@ -29,28 +36,28 @@ app.use(cors({
 }));
 
 // Limitar las solicitudes (rate limiting)
-const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 100, // Limita cada IP a 100 solicitudes por ventana de 15 minutos
-    message: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
-});
+//const apiLimiter = rateLimit({
+///    windowMs: 15 * 60 * 1000, // 15 minutos
+////    max: 100, // Limita cada IP a 100 solicitudes por ventana de 15 minutos
+//    message: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
+///});
 
-app.use('/api', apiLimiter);
+//app.use('/api', apiLimiter);
 
 // Rutas de la API
-const userRouter = require('./models/routes/users');
-const afiliadosRouter = require('./models/routes/afiliados');
-const thirdPartyRouter = require('./models/routes/thirdParties');
-const walletRouter = require('./models/routes/wallet');
-const transactionRouter = require('./models/routes/transactions');
-const pointsRouter = require('./models/routes/points');
-const purchasesRouter = require('./models/routes/purchases');
-const userBackOfficeRouter = require('./models/routes/userbackoffice');
-const domiciliariosRouter = require('./models/routes/domiciliarios');
-const wholesalerRouter = require('./models/routes/wholesalers');
-const entrepreneurRouter = require('./models/routes/entrepreneurs');
-const collaboratorRouter = require('./models/routes/collaborators');
-const crmRouter = require('./models/routes/crm');
+const userRouter = require('../models/routes/users');
+const afiliadosRouter = require('../models/routes/afiliados');
+const thirdPartyRouter = require('../models/routes/thirdParties');
+const walletRouter = require('../models/routes/wallet');
+const transactionRouter = require('../models/routes/transactions');
+const pointsRouter = require('../models/routes/points');
+const purchasesRouter = require('../models/routes/purchases');
+const userBackOfficeRouter = require('../models/routes/userbackoffice');
+const domiciliariosRouter = require('../models/routes/domiciliarios');
+const wholesalerRouter = require('../models/routes/wholesalers');
+const entrepreneurRouter = require('../models/routes/entrepreneurs');
+const collaboratorRouter = require('../models/routes/collaborators');
+const crmRouter = require('../models/routes/crm');
 
 app.use('/api/users', userRouter);
 app.use('/api/afiliados', afiliadosRouter);
@@ -67,8 +74,12 @@ app.use('/api/collaborators', collaboratorRouter);
 app.use('/api/crm', crmRouter);
 
 // Ruta para admin
-app.get('/api/admin/users', authMiddleware, adminMiddleware, async (req, res) => {
+app.get('/api/admin/users', authMiddleware.authMiddleware, adminMiddleware, async (req, res) => {
     res.send('Usuarios');
+});
+
+app.get('/', (req, res) => {
+    res.render('index');
 });
 
 // Conexión a la base de datos MongoDB

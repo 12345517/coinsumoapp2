@@ -7,7 +7,7 @@ const Wallet = require('../Wallet'); // Importa el modelo Wallet
 const { getUser, findPosition } = require("../../middleware/userMiddleware");
 
 // Ruta para obtener todos los usuarios (solo para usuarios autenticados)
-userRouter.get("/", authMiddleware, async (req, res) => {
+userRouter.get("/", authMiddleware.authMiddleware, async (req, res) => {
   console.log("Ruta GET /users alcanzada"); // Verifica que la ruta se invoca
   try {
     const users = await User.find().populate("wallet"); // Población de billetera
@@ -81,12 +81,12 @@ userRouter.post("/", async (req, res) => {
 });
 
 // Ruta para obtener un usuario por ID (solo para usuarios autenticados)
-userRouter.get("/:id", authMiddleware, getUser, (req, res) => {
+userRouter.get("/:id", authMiddleware.authMiddleware, getUser, (req, res) => {
   res.json(res.user);
 });
 
 // Ruta para obtener el saldo de puntos de un usuario
-userRouter.get("/:id/points", authMiddleware, async (req, res) => {
+userRouter.get("/:id/points", authMiddleware.authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -100,7 +100,7 @@ userRouter.get("/:id/points", authMiddleware, async (req, res) => {
 });
 
 // Ruta para obtener los referidos de un usuario (solo para usuarios autenticados)
-userRouter.get("/:id/referrals", authMiddleware, async (req, res) => {
+userRouter.get("/:id/referrals", authMiddleware.authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).populate('referrals');
     if (!user) {

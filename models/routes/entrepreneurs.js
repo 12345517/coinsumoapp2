@@ -4,7 +4,7 @@ const User = require('../User');
 const authMiddleware = require('../../middleware/authMiddleware');
 
 // Ruta para obtener la información de un empresario
-router.get('/:entrepreneurId', authMiddleware, async (req, res) => {
+router.get('/:entrepreneurId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);
@@ -50,7 +50,7 @@ router.get('/:entrepreneurId', authMiddleware, async (req, res) => {
 });
 
 // Ruta para crear un nuevo empresario
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);
@@ -77,7 +77,7 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 // Ruta para actualizar la información de un empresario
-router.patch('/:entrepreneurId', authMiddleware, async (req, res) => {
+router.patch('/:entrepreneurId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);
@@ -107,7 +107,7 @@ router.patch('/:entrepreneurId', authMiddleware, async (req, res) => {
 });
 
 // Ruta para eliminar un empresario
-router.delete('/:entrepreneurId', authMiddleware, async (req, res) => {
+router.delete('/:entrepreneurId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);

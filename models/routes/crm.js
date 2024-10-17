@@ -4,7 +4,7 @@ const Contact = require('../Contact');
 const authMiddleware = require('../../middleware/authMiddleware'); // Tu middleware de autenticación
 
 // Ruta para obtener todos los contactos
-router.get('/contacts', authMiddleware, async (req, res) => {
+router.get('/contacts', authMiddleware.authMiddleware, async (req, res) => {
   try {
     const contacts = await Contact.find();
     res.json(contacts);
@@ -15,7 +15,7 @@ router.get('/contacts', authMiddleware, async (req, res) => {
 });
 
 // Ruta para crear un nuevo contacto
-router.post('/contacts', authMiddleware, async (req, res) => {
+router.post('/contacts', authMiddleware.authMiddleware, async (req, res) => {
   try {
     const { name, email, phone, notes } = req.body;
     const newContact = new Contact({ name, email, phone, notes });
@@ -28,7 +28,7 @@ router.post('/contacts', authMiddleware, async (req, res) => {
 });
 
 // Ruta para actualizar un contacto
-router.put('/contacts/:id', authMiddleware, async (req, res) => {
+router.put('/contacts/:id', authMiddleware.authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, phone, notes } = req.body;
@@ -41,7 +41,7 @@ router.put('/contacts/:id', authMiddleware, async (req, res) => {
 });
 
 // Ruta para eliminar un contacto
-router.delete('/contacts/:id', authMiddleware, async (req, res) => {
+router.delete('/contacts/:id', authMiddleware.authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     await Contact.findByIdAndDelete(id);

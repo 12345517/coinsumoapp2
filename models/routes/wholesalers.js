@@ -6,7 +6,7 @@ const authMiddleware = require('../../middleware/authMiddleware');
 const verifyMembershipStatus = require('./utils/membership').verifyMembershipStatus;
 
 // Ruta para obtener la información de un mayorista
-router.get('/:wholesaleId', authMiddleware, async (req, res) => {
+router.get('/:wholesaleId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);
@@ -43,7 +43,7 @@ router.get('/:wholesaleId', authMiddleware, async (req, res) => {
 });
 
 // Ruta para crear un nuevo mayorista
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);
@@ -68,7 +68,7 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 // Ruta para actualizar la información de un mayorista
-router.patch('/:wholesaleId', authMiddleware, async (req, res) => {
+router.patch('/:wholesaleId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);
@@ -98,7 +98,7 @@ router.patch('/:wholesaleId', authMiddleware, async (req, res) => {
 });
 
 // Ruta para eliminar un mayorista
-router.delete('/:wholesaleId', authMiddleware, async (req, res) => {
+router.delete('/:wholesaleId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const user = await User.findById(req.user._id);

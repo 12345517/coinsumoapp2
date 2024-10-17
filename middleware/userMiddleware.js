@@ -2,15 +2,17 @@ const User = require('../models/User');
 
 // Middleware to get a user by ID
 async function getUser(req, res, next) {
+  console.log('buscando usuario')
   try {
+
     const user = await User.findById(req.params.id).populate('wallet');
     if (!user) {
-      return next({ status: 404, message: 'User not found' });
+      res.status(404).json({ message: 'User not found' });
     }
     res.user = user;
-    next();
+    return next();
   } catch (err) {
-    next({ status: 500, message: err.message });
+    res.status(500).json({ message: err.message });
   }
 }
 

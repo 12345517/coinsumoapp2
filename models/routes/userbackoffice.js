@@ -4,7 +4,7 @@ const User = require('../User');
 const authMiddleware = require('../../middleware/authMiddleware');
 
 // Ruta para obtener información del backoffice
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware.authMiddleware, async (req, res) => {
   try {
     // Obtener el usuario actual
     const currentUser = req.user;

@@ -18,12 +18,12 @@ userRouter.post('/login', async (req, res) => {
 });
 
 // Ruta para obtener un usuario por ID (solo para usuarios autenticados)
-userRouter.get("/:id", authMiddleware, getUser, (req, res) => {
+userRouter.get("/:id", authMiddleware.authMiddleware, getUser, (req, res) => {
   res.json(res.user);
 });
 
 // Ruta para obtener el saldo de puntos de un usuario (corregido)
-userRouter.get("/:id/points", authMiddleware, async (req, res) => {
+userRouter.get("/:id/points", authMiddleware.authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -37,7 +37,7 @@ userRouter.get("/:id/points", authMiddleware, async (req, res) => {
 });
 
 // Ruta para obtener los referidos de un usuario (ya está bien)
-userRouter.get("/:id/referrals", authMiddleware, async (req, res) => {
+userRouter.get("/:id/referrals", authMiddleware.authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).populate('referrals');
     if (!user) {

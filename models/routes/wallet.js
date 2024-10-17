@@ -3,12 +3,12 @@ const router = express.Router();
 const Wallet = require('../Wallet'); // Asegúrate de que la ruta sea correcta
 const User = require('../User'); // Asegúrate de que la ruta sea correcta
 const Transaction = require('../Transaction'); // Asegúrate de que la ruta sea correcta
-const { authMiddleware } = require('../../middleware/authMiddleware');
+const authMiddleware = require('../../middleware/authMiddleware');
 const validateUserId = require('../../middleware/validatorUserId');
 const validateAmount = require('../../middleware/validators/validateAmount'); // Actualiza esta ruta
 
 // Obtener el saldo de la billetera de un usuario
-router.get('/:userId', authMiddleware, async (req, res, next) => {
+router.get('/:userId', authMiddleware.authMiddleware, async (req, res, next) => {
   try {
     const { userId } = req.params;
     const wallet = await Wallet.findOne({ userId });
@@ -22,7 +22,7 @@ router.get('/:userId', authMiddleware, async (req, res, next) => {
 });
 
 // Recargar billetera
-router.post('/recargar/:userId', authMiddleware, validateUserId, validateAmount, async (req, res, next) => {
+router.post('/recargar/:userId', authMiddleware.authMiddleware, validateUserId, validateAmount, async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });

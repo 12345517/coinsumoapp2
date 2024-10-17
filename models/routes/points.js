@@ -6,7 +6,7 @@ const { distributePoints } = require('./utils/matrix');
 const authMiddleware = require('../../middleware/authMiddleware');
 
 // Obtener el saldo de puntos de un usuario
-router.get('/:userId', authMiddleware, async (req, res) => {
+router.get('/:userId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId);
@@ -21,7 +21,7 @@ router.get('/:userId', authMiddleware, async (req, res) => {
 });
 
 // Canjear puntos por productos o servicios
-router.post('/canjear/:userId', authMiddleware, async (req, res) => {
+router.post('/canjear/:userId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     const { userId } = req.params;
     const { amount } = req.body;
@@ -59,7 +59,7 @@ router.post('/canjear/:userId', authMiddleware, async (req, res) => {
 });
 
 // Ruta para registrar puntos ganados por un usuario (se llama desde otro lugar, como una compra)
-router.post('/registrar/:userId', authMiddleware, async (req, res) => {
+router.post('/registrar/:userId', authMiddleware.authMiddleware, async (req, res) => {
   try {
     const { userId } = req.params;
     const { amount, purchaseAmount } = req.body; // purchaseAmount es el monto de la compra
