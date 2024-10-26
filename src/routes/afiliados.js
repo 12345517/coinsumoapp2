@@ -1,7 +1,7 @@
 // models/routes/afiliados.js
 const express = require('express');
 const router = express.Router();
-const User = require('../User'); // Ruta al modelo de usuario
+const User = require('../models/User'); // Ruta al modelo de usuario
 
 // Endpoint para obtener afiliados por ID de usuario
 router.get('/afiliados', async (req, res) => {

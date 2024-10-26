@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Contact = require('../Contact');
-const authMiddleware = require('../../middleware/authMiddleware'); // Tu middleware de autenticación
+const Contact = require('../models/Contact');
+const authMiddleware = require('../middleware/authMiddleware'); // Tu middleware de autenticación
 
 // Ruta para obtener todos los contactos
 router.get('/contacts', authMiddleware.authMiddleware, async (req, res) => {

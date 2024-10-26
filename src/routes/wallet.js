@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Wallet = require('../Wallet'); // Asegúrate de que la ruta sea correcta
-const User = require('../User'); // Asegúrate de que la ruta sea correcta
-const Transaction = require('../Transaction'); // Asegúrate de que la ruta sea correcta
-const authMiddleware = require('../../middleware/authMiddleware');
-const validateUserId = require('../../middleware/validatorUserId');
-const validateAmount = require('../../middleware/validators/validateAmount'); // Actualiza esta ruta
+const Wallet = require('../models/Wallet'); // Asegúrate de que la ruta sea correcta
+const User = require('../models/User'); // Asegúrate de que la ruta sea correcta
+const Transaction = require('../models/Transaction'); // Asegúrate de que la ruta sea correcta
+const authMiddleware = require('../middleware/authMiddleware');
+const validateUserId = require('../middleware/validatorUserId');
+const validateAmount = require('../middleware/validators/validateAmount'); // Actualiza esta ruta
 
 // Obtener el saldo de la billetera de un usuario
 router.get('/:userId', authMiddleware.authMiddleware, async (req, res, next) => {

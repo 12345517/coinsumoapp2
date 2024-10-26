@@ -3,8 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
-import RegistroScreen from './screens/RegistroScreen'; // Importa la pantalla de registro
-import ExampleComponent from './components/ExampleComponent'; // Asegúrate de que este componente exista
+import RegistroScreen from './screens/RegistroScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
+import VerifyEmailScreen from './screens/VerifyEmailScreen';
 
 const Stack = createStackNavigator();
 
@@ -14,20 +16,11 @@ const App = () => {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Registro" component={RegistroScreen} /> {/* Agrega la ruta de registro */}
-        {/* ... otras pantallas ... */}
+        <Stack.Screen name="Registro" component={RegistroScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+        <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
       </Stack.Navigator>
-      <div className="App">
-        <h1>Welcome to Coinsumo</h1>
-        <nav>
-          <ul>
-            <li>Home</li>
-            <li>About</li>
-            <li>Contact</li>
-          </ul>
-        </nav>
-        <ExampleComponent />
-      </div>
     </NavigationContainer>
   );
 };

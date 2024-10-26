@@ -1,10 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const userRouter = express.Router();
-const authMiddleware = require('../../middleware/authMiddleware');
-const User = require('../User'); // Importa el modelo User
-const Wallet = require('../Wallet'); // Importa el modelo Wallet
-const { getUser, findPosition } = require("../../middleware/userMiddleware");
+const authMiddleware = require('../middleware/authMiddleware');
+const User = require('../models/User'); // Importa el modelo User
+const Wallet = require('../models/Wallet'); // Importa el modelo Wallet
+const { getUser, findPosition } = require("../middleware/userMiddleware");
 
 // Ruta para obtener todos los usuarios (solo para usuarios autenticados)
 userRouter.get("/", authMiddleware.authMiddleware, async (req, res) => {
@@ -113,6 +113,17 @@ userRouter.get("/:id/referrals", authMiddleware.authMiddleware, async (req, res)
   }
 });
 
+// Nueva ruta para registrar un usuario
+userRouter.post('/register', async (req, res) => {
+  try {
+    const { idNumber, name, username, email, password, whatsapp, pais, departamento, ciudad, direccion, role, sponsorId } = req.body;
+    const user = new User({ idNumber, name, username, email, password, whatsapp, pais, departamento, ciudad, direccion, role, sponsorId });
+    await user.save();
+    res.status(201).send('User registered successfully');
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
 // Exportar el router
 module.exports = userRouter;
- 

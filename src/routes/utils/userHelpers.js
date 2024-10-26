@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../../models/User');
 
 // Función intermedia para obtener un usuario por ID
 async function getUser(req, res, next) {

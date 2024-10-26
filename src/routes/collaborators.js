@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../User'); // Asegúrate de que la ruta sea correcta
-const Collaborator = require('../Collaborator'); // Asegúrate de que la ruta sea correcta
+const User = require('../models/User'); // Asegúrate de que la ruta sea correcta
+const Collaborator = require('../models/Collaborator'); // Asegúrate de que la ruta sea correcta
 
 // Registrar nuevo afiliado
 router.post('/register', async (req, res) => {

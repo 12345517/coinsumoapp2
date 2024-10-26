@@ -1,4 +1,4 @@
-const User = require('../../User');
+const User = require('../../models/User');
 
 // Función para verificar el estado de la membresía
 async function verifyMembershipStatus(userId) {

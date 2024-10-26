@@ -2,64 +2,65 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const path = require('path');
-const authMiddleware = require('../middleware/authMiddleware');
-const adminMiddleware = require('../middleware/adminMiddleware');
-const errorHandler = require('../middleware/errorHandler');
-//import React from 'react';
-//import ReactDOM from 'react-dom';
-//import App from './App';
-//import '../public/styles.css'; // Importa el archivo de estilos desde el directorio public
-
+const crypto = require('crypto'); // Importar el módulo crypto para generar el nonce
+const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
+const { authMiddleware, adminMiddleware } = require('./middleware/authMiddleware');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.NEW_PORT || 5009; // Cambiar el puerto a 5009
 
 app.use(express.json());
 app.use(helmet());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-// Configuración de CORS
 app.use(cors({
     origin: [
         'https://coinsumo.co',
-        'http://localhost:4000',
+        'http://localhost:5009',
         'https://www.coinsumo.co'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }));
+app.use(express.static(path.join(__dirname, '../public')));
 
-// Limitar las solicitudes (rate limiting)
-//const apiLimiter = rateLimit({
-///    windowMs: 15 * 60 * 1000, // 15 minutos
-////    max: 100, // Limita cada IP a 100 solicitudes por ventana de 15 minutos
-//    message: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
-///});
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../views')); // Asegúrate de que la ruta sea correcta
 
-//app.use('/api', apiLimiter);
+// Middleware para generar un nonce y agregarlo a las respuestas
+app.use((req, res, next) => {
+    res.locals.nonce = crypto.randomBytes(16).toString('base64');
+    res.setHeader('Content-Security-Policy', `script-src 'self' 'nonce-${res.locals.nonce}'`);
+    next();
+});
+
+// Middleware para registrar todas las solicitudes y respuestas
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    res.on('finish', () => {
+        console.log(`Response Status: ${res.statusCode}`);
+    });
+    next();
+});
 
 // Rutas de la API
-const userRouter = require('../models/routes/users');
-const afiliadosRouter = require('../models/routes/afiliados');
-const thirdPartyRouter = require('../models/routes/thirdParties');
-const walletRouter = require('../models/routes/wallet');
-const transactionRouter = require('../models/routes/transactions');
-const pointsRouter = require('../models/routes/points');
-const purchasesRouter = require('../models/routes/purchases');
-const userBackOfficeRouter = require('../models/routes/userbackoffice');
-const domiciliariosRouter = require('../models/routes/domiciliarios');
-const wholesalerRouter = require('../models/routes/wholesalers');
-const entrepreneurRouter = require('../models/routes/entrepreneurs');
-const collaboratorRouter = require('../models/routes/collaborators');
-const crmRouter = require('../models/routes/crm');
+const userRouter = require('./routes/users');
+const afiliadosRouter = require('./routes/afiliados');
+const thirdPartyRouter = require('./routes/thirdParties');
+const walletRouter = require('./routes/wallet');
+const transactionRouter = require('./routes/transactions');
+const pointsRouter = require('./routes/points');
+const purchasesRouter = require('./routes/purchases');
+const userBackOfficeRouter = require('./routes/userbackoffice');
+const domiciliariosRouter = require('./routes/domiciliarios');
+const wholesalerRouter = require('./routes/wholesalers');
+const entrepreneurRouter = require('./routes/entrepreneurs');
+const collaboratorRouter = require('./routes/collaborators');
+const crmRouter = require('./routes/crm');
 
 app.use('/api/users', userRouter);
+app.use('/api/auth', authRoutes); // Usa auth routes
 app.use('/api/afiliados', afiliadosRouter);
 app.use('/api/thirdParties', thirdPartyRouter);
 app.use('/api/wallet', walletRouter);
@@ -74,29 +75,39 @@ app.use('/api/collaborators', collaboratorRouter);
 app.use('/api/crm', crmRouter);
 
 // Ruta para admin
-app.get('/api/admin/users', authMiddleware.authMiddleware, adminMiddleware, async (req, res) => {
+app.get('/api/admin/users', authMiddleware, adminMiddleware, async (req, res) => {
     res.send('Usuarios');
 });
 
+// Rutas para archivos estáticos
 app.get('/', (req, res) => {
     res.render('index');
 });
 
+app.get('/register', (req, res) => {
+    res.render('register', { nonce: res.locals.nonce });
+});
+
+app.get('/users', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/users.html'));
+});
+
+app.get('/reset-password/:token', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/reset-password.html'));
+});
+
 // Conexión a la base de datos MongoDB
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('Conectado a la base de datos'))
-    .catch(err => {
-        console.error('Error al conectar a la base de datos:', err);
-        process.exit(1); // Detener la ejecución si hay un error de conexión
-    });
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('Could not connect to MongoDB', err));
 
 // Middleware de manejo de errores
-app.use(errorHandler);
-
-// Middleware de manejo de errores adicional
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+    console.error("Error:", err.stack); // Imprime la pila de llamadas para depuración
+    res.status(500).json({ message: 'Error del servidor', error: err.message, stack: err.stack }); // Envía más información al cliente
 });
 
 app.listen(PORT, () => {

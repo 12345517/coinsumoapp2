@@ -1,55 +1,40 @@
- // script.js
+// script.js
 
- document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('registrationForm');
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        
-        const userId = document.getElementById('userId').value;
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const whatsapp = document.getElementById('whatsapp').value;
-        const tipo_usuario = document.getElementById('tipo_usuario').value;
-        const porcentaje = document.getElementById('porcentaje').value;
-        const pais = document.getElementById('pais').value;
-        const departamento = document.getElementById('departamento').value;
-        const ciudad = document.getElementById('ciudad').value;
-        const direccion = document.getElementById('direccion').value;
-        const acceptTerms = document.getElementById('acceptTerms').checked;
+document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const idNumber = document.getElementById('idNumber').value;
+            const name = document.getElementById('name').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const pais = document.getElementById('pais').value;
+            const departamento = document.getElementById('departamento').value;
+            const ciudad = document.getElementById('ciudad').value;
+            const direccion = document.getElementById('direccion').value;
+            const role = document.getElementById('role').value;
+            const sponsorId = document.getElementById('sponsorId').value;
 
-        const data = {
-            userId,
-            name,
-            email,
-            whatsapp,
-            tipo_usuario,
-            porcentaje,
-            pais,
-            departamento,
-            ciudad,
-            direccion,
-            acceptTerms
-        };
-
-        try {
-            const response = await fetch('/register', {
+            const response = await fetch('/api/users/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify({ idNumber, name, username, email, password, whatsapp, pais, departamento, ciudad, direccion, role, sponsorId })
             });
 
-            const result = await response.json();
             if (response.ok) {
-                alert('Registro exitoso');
-                window.location.href = '/exito'; // Redirige a una página de éxito
+                alert('User registered successfully');
+                window.location.href = '/login'; // Redirigir a la página de inicio de sesión
             } else {
-                alert(`Error en el registro: ${result.message}`);
+                const errorText = await response.text();
+                alert('Error registering user: ' + errorText);
             }
-        } catch (error) {
-            console.error('Error al enviar el formulario:', error);
-            alert('Error al enviar el formulario');
-        }
-    });
+        });
+    } else {
+        console.error("El formulario con el ID 'registerForm' no se encontró.");
+    }
 });

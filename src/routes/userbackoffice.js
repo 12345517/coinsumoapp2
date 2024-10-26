@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../User');
-const authMiddleware = require('../../middleware/authMiddleware');
+const User = require('../models/User');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Ruta para obtener información del backoffice
 router.get('/', authMiddleware.authMiddleware, async (req, res) => {

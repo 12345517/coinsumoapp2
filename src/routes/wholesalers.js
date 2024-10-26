@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../User');
-const Wholesale = require('../Wholesale'); 
-const authMiddleware = require('../../middleware/authMiddleware');
+const User = require('../models/User');
+const Wholesale = require('../models/Wholesale'); 
+const authMiddleware = require('../middleware/authMiddleware');
 const verifyMembershipStatus = require('./utils/membership').verifyMembershipStatus;
 
 // Ruta para obtener la información de un mayorista

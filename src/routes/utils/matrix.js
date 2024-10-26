@@ -1,6 +1,6 @@
  const express = require('express');
-const Point = require('../../Point');
-const User = require('../../User');
+const Point = require('../../models/Point');
+const User = require('../../models/User');
 
 // ... (Otras funciones de la matriz)
 

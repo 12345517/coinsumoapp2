@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Purchase = require('../Purchase');
-const User = require('../User');
-const Point = require('../Point');
+const Purchase = require('../models/Purchase');
+const User = require('../models/User');
+const Point = require('../models/Point');
 
 // Crear una nueva compra
 router.post('/', async (req, res) => {

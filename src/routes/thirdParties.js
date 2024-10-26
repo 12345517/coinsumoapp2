@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 //const ThirdParty = require('../models/ThirdParty');
-const thirdParty = require('../ThirdParty');
+const thirdParty = require('../models/ThirdParty');
 //const Wallet = require('../models/Wallet');
-const Wallet = require('../../models/Wallet');
-const { getThirdParty } = require('../../middleware/thirdPartyMiddleware'); // Importa el middleware
+const Wallet = require('../models/Wallet');
+const { getThirdParty } = require('../middleware/thirdPartyMiddleware'); // Importa el middleware
 //const ThirdParty = new thirdParty();
 
 // Crear un nuevo tercero

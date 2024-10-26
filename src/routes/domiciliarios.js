@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../User');
-const Transaction = require('../Transaction');
-const Wallet = require('../Wallet'); // Asegúrate de que Wallet esté importado correctamente
-const authMiddleware = require('../../middleware/authMiddleware');
+const User = require('../models/User');
+const Transaction = require('../models/Transaction');
+const Wallet = require('../models/Wallet'); // Asegúrate de que Wallet esté importado correctamente
+const authMiddleware = require('../middleware/authMiddleware');
 // Ruta para obtener la información de un domiciliario
 router.get('/:domiciliarioId', authMiddleware.authMiddleware, async (req, res) => {
   try {

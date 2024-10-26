@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Point = require('../../models/Point');
-const User = require('../../models/User');
+const Point = require('../models/Point');
+const User = require('../models/User');
 const { distributePoints } = require('./utils/matrix');
-const authMiddleware = require('../../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Obtener el saldo de puntos de un usuario
 router.get('/:userId', authMiddleware.authMiddleware, async (req, res) => {

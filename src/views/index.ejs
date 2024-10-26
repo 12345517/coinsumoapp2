@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coinsumo</title>
     <link rel="stylesheet" href="styles.css"> <!-- Tu hoja de estilos -->
-    <script src="script.js" defer></script> <!-- Archivo JavaScript cargado al final -->
 </head>
 
 <body>
@@ -78,7 +77,7 @@
                 <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
                 <label for="acceptTerms">Acepto los <a href="#terms">términos y condiciones</a></label>
         
-                <button type="submit">Registrar</button>
+                <a href="javascript:;" id="btn_send_form" >Registrar</a>
             </form>
         </section>
         
@@ -115,8 +114,10 @@
             }
         }
 
-        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        document.getElementById('btn_send_form').addEventListener('click', function() {
+    
+
+            console.log('enviando formulario...')
 
             const idNumber = document.getElementById('idNumber').value;
             const name = document.getElementById('name').value;
@@ -134,7 +135,7 @@
             const data = { idNumber, name, email, password, whatsapp, pais, departamento, ciudad, direccion, role, sponsorId, porcentaje };
 
             try {
-                const response = await fetch('/api/afiliados/register', {
+                const response =  fetch('/api/users/registro', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -142,10 +143,10 @@
                     body: JSON.stringify(data)
                 });
 
-                const result = await response.json();
+                const result =  response.json();
                 if (response.ok) {
                     alert('Registro exitoso');
-                    window.location.href = '/exito';
+                    //window.location.href = '/exito';
                 } else {
                     alert(`Error en el registro: ${result.message}`);
                 }
